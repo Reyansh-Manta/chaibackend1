@@ -1,18 +1,22 @@
 {
   "name": "51-chai-bakend-1",
   "version": "1.0.0",
-  "description": "",
+  "description": "chai_backend_1",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/index.js",
+    "dev": "nodemon --env-file=.env src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "Reyansh Manta",
   "license": "ISC",
   "type": "module",
   "devDependencies": {
     "nodemon": "^3.1.10",
     "prettier": "^3.5.3"
+  },
+  "dependencies": {
+    "experss": "^0.0.1-security",
+    "mongoose": "^8.15.1"
   }
 }
