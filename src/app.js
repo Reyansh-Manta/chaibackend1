@@ -1,3 +1,5 @@
+//app.js start
+
 import express from "express"
 import cookieParser from "cookie-parser"
 import cors from "cors"
@@ -20,6 +22,8 @@ const app = express()
     //routes declaration
     //cant use app.get because router are in a different file
 
-    app.use("/api/v1/users", userRouter)
+    app.use("/users", userRouter)
 
 export {app}
+
+//app.js

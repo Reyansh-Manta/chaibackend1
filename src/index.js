@@ -1,8 +1,11 @@
+//index.js start
+
 import connectDB from "./db/index.js"
 import { app } from "./app.js"
 import cookieParser from "cookie-parser"
 import cors from "cors"
 import express from "express"
+import { asyncHandler } from "./utils/asyncHandler.js"
 
 connectDB()
 .then(()=>{
@@ -17,3 +20,5 @@ connectDB()
 .catch((err)=>{
     console.log("Error in connecting to app",err);
 })
+
+//index.js end
