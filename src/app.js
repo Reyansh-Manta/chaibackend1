@@ -22,7 +22,7 @@ const app = express()
     //routes declaration
     //cant use app.get because router are in a different file
 
-    app.use("/users", userRouter)
+    app.use("/api/v1/users", userRouter)
 
 export {app}
 
