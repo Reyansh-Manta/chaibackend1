@@ -3,27 +3,27 @@
 import express from "express"
 import cookieParser from "cookie-parser"
 import cors from "cors"
-import {lim} from "./constants.js"
+import { lim } from "./constants.js"
 
 const app = express()
 
-    app.use(cors({
-        origin: process.env.CORS_ORIGIN,
-        credentials: true
-    }))
-    app.use(express.json({limit: lim}))
-    app.use(express.urlencoded({extended:true, limit: lim}))
-    app.use(express.static("public"))
-    app.use(cookieParser())
-    
-    //import routes
-    import userRouter from "./routes/user.routes.js"
+app.use(cors({
+    origin: process.env.CORS_ORIGIN,
+    credentials: true
+}))
+app.use(express.json({ limit: lim }))
+app.use(express.urlencoded({ extended: true, limit: lim }))
+app.use(express.static("public"))
+app.use(cookieParser())
 
-    //routes declaration
-    //cant use app.get because router are in a different file
+//import routes
+import userRouter from "./routes/user.routes.js"
 
-    app.use("/api/v1/users", userRouter)
+//routes declaration
+//cant use app.get because router are in a different file
 
-export {app}
+app.use("/api/v1/users", userRouter)
+
+export { app }
 
 //app.js
