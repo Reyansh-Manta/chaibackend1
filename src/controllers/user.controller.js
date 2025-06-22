@@ -4,7 +4,7 @@ import { asyncHandler } from "../utils/asyncHandler.js"
 import { ApiError } from "../utils/ApiErrors.js"
 import { ApiResponse } from "../utils/ApiResponse.js"
 import { User } from "../models/user.model.js"
-import { uploadOnCloudinary } from "../utils/cloudinary.js"
+import { deleteFromCloudinary, uploadOnCloudinary } from "../utils/cloudinary.js"
 import jwt from "jsonwebtoken"
 
 const generateAccessAndRefreshTokens = async (userId) => {
@@ -301,19 +301,32 @@ const updateEmail = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, user, "email was updated"))
 })
 
-const updateAvatar = asyncHandler(async (res, req) => {
+const updateAvatar = asyncHandler(async (req, res) => {
+    
+    const oldImageUSER = req.user
 
-    const avatarLocalPath = req.files?.path
+    if (!oldImageUSER) {
+        throw new ApiError(501, "User not found")
+    }
+
+    const curl = oldImageUSER.avatar
+
+    if (!curl) {
+        throw new ApiError(501, "avatar not found")
+    }
+    await deleteFromCloudinary(curl)
+
+    const avatarLocalPath = req.file?.path
     if (!avatarLocalPath) {
         throw new ApiError(401, "file local path not found")
     }
-    avatar = uploadOnCloudinary(avatarLocalPath)
+    const avatar = await uploadOnCloudinary(avatarLocalPath)
 
-    if (avatar.url) {
-        throw new ApiError(401, "file url not found on cloudinary")
+    if (!avatar.url) {
+        throw new ApiError(401, "uploading file url not found on cloudinary")
     }
 
-    const user = User.findByIdAndUpdate(
+    const user = await User.findByIdAndUpdate(
         req.user._id,
         {
             $set: {
@@ -329,19 +342,32 @@ const updateAvatar = asyncHandler(async (res, req) => {
 
 })
 
-const updateCoverImage = asyncHandler(async (res, req) => {
+const updateCoverImage = asyncHandler(async (req, res) => {
 
-    const coverImageLocalPath = req.files?.path
+    const oldImageUSER = req.user
+
+    if (!oldImageUSER) {
+        throw new ApiError(501, "User not found")
+    }
+
+    const curl = oldImageUSER.coverImage
+
+    if (!curl) {
+        throw new ApiError(501, "coverImage not found")
+    }
+    await deleteFromCloudinary(curl)
+
+    const coverImageLocalPath = req.file?.path
     if (!coverImageLocalPath) {
         throw new ApiError(401, "file local path not found")
     }
-    coverImage = uploadOnCloudinary(coverImageLocalPath)
+    const coverImage = await uploadOnCloudinary(coverImageLocalPath)
 
-    if (coverImage.url) {
+    if (!coverImage.url) {
         throw new ApiError(401, "file url not found on cloudinary")
     }
 
-    const user = User.findByIdAndUpdate(
+    const user = await User.findByIdAndUpdate(
         req.user._id,
         {
             $set: {
@@ -448,7 +474,7 @@ const getWatchHistory = asyncHandler(async (req, res) => {
                         foreignField: "_id",
                         as: "owner",
                         pipeline: [{
-                            $project:{
+                            $project: {
                                 fullName: 1,
                                 username: 1,
                                 avatar: 1
@@ -456,21 +482,21 @@ const getWatchHistory = asyncHandler(async (req, res) => {
                         }]
                     }
                 },
-              {
-                        $addFields: {
-                            owner:{
-                                $first: "$owner"
-                            }
+                {
+                    $addFields: {
+                        owner: {
+                            $first: "$owner"
                         }
                     }
+                }
                 ]
             }
         }
-])
+    ])
 
-return res
-    .status(200)
-    .json(new ApiResponse(200, user[0].watchHistory, "User History fetched successfully"))
+    return res
+        .status(200)
+        .json(new ApiResponse(200, user[0].watchHistory, "User History fetched successfully"))
 
 })
 
