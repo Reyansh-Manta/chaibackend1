@@ -73,6 +73,10 @@ const updateTweet = asyncHandler(async (req, res) => {
     const {newTweet} = req.body
     const {tweetID} = req.params
 
+    if(!isValidObjectId(tweetID)){
+        throw new ApiError(410, "Id in the url is not a valid objectId")
+    }
+
     if(!newTweet || !tweetID){
         throw new ApiError(401, "info not provided")
     }
@@ -95,15 +99,17 @@ const updateTweet = asyncHandler(async (req, res) => {
 
 const deleteTweet = asyncHandler(async (req, res) => {
 
-    const {tweetID} = req.body
+    const {tweetID} = req.params
+
+     if(!isValidObjectId(tweetID)){
+        throw new ApiError(410, "Id in the url is not a valid objectId")
+    }
 
     if(!tweetID){
         throw new ApiError(401, "info not provided")
     }
 
-    const tweet = await Tweet.findByIdAndDelete(
-        tweetID
-    )
+    await Tweet.findByIdAndDelete(tweetID)
 
     return res
         .status(200)
