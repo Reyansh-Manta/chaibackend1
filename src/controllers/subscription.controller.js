@@ -8,6 +8,11 @@ import { ApiResponse } from "../utils/ApiResponse.js"
 
 const toggleSubscription = asyncHandler(async (req, res) => {
     const {channelId} = req.params
+
+    if(!isValidObjectId(channelId)){
+        throw new ApiError(401, "channelId not valid")
+    }
+
     const user = req.user
     
     const subs = await Subscription.aggregate([
@@ -58,6 +63,10 @@ const toggleSubscription = asyncHandler(async (req, res) => {
 const getUserChannelSubscribers = asyncHandler(async (req, res) => {
     const {channelId} = req.params
 
+    if(!isValidObjectId(channelId)){
+    throw new ApiError(401, "channelId not valid")
+    }
+
     const subs = await Subscription.aggregate([
         {
             $match:{
@@ -89,6 +98,10 @@ const getUserChannelSubscribers = asyncHandler(async (req, res) => {
 
 const getSubscribedChannels = asyncHandler(async (req, res) => {
     const {subscriberId} = req.params
+
+        if(!isValidObjectId(subscriberId)){
+        throw new ApiError(401, "subscriberId not valid")
+    }
 
     const subs = await Subscription.aggregate([
         {
