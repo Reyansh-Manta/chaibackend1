@@ -119,8 +119,7 @@ const getSubscribedChannels = asyncHandler(async (req, res) => {
         },
         {
             $project:{ 
-                subscriber: 1,
-                subscribedToData: 1
+                subscriber: 1
             }
         }       
     ])
