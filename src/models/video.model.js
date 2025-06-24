@@ -14,7 +14,6 @@ const videoSchema = new Schema(
         },
         owner: {
             type: Schema.Types.ObjectId,
-            required: true,
             ref: "User"
         },
         Title: {
@@ -27,15 +26,15 @@ const videoSchema = new Schema(
         },
         duration: {
             type: Number,
-            requires: true
+            // requires: true
         },
         views: {
             type: Number,
-            requires: true
+            // requires: true
         },
         isPublished:{
             type: Boolean,
-            default: true
+            // default: true
         }
 
     },
