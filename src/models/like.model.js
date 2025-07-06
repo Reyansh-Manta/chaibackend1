@@ -8,11 +8,7 @@ const likeSchema = new Schema({
     owner: {
         type: mongoose.Types.ObjectId,
         ref: "User"
-    },
-    content: {
-        type: String,
-        required: true
-    }    
+    }
 },{timestamps: true})
 
 export const Like = mongoose.model("like", likeSchema)
